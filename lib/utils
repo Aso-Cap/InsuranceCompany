@@ -1,0 +1,66 @@
+<?php
+
+class utils
+{
+
+    /**
+     * Permet de supprimer un fichier local
+     *
+     * @param string $pathFile
+     *            chemin du fichier a supprimer
+     *            
+     * @return boolean
+     * @author Ayoub SOUID AHMED <a.souidahmed@gmail.com>
+     */
+    public static function deleteLocalfile($pathFile)
+    {
+        system("rm " . escapeshellarg($pathFile), $ret);
+        if ($ret) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Permet d'ecrire des donnees sur un fichier
+     *
+     * @param string $fileName
+     *            chemin du fichier
+     * @param string $data            
+     * @param string $mode
+     *            mode d'ecriture
+     * @return boolean
+     * @author Ayoub SOUID AHMED <a.souidahmed@gmail.com>
+     */
+    public static function writeFile($fileName, $data, $mode = 'a')
+    {
+        $fp = fopen($fileName, $mode);
+        if (! fwrite($fp, $data) && ! empty($data) && ! is_file($fileName)) {
+            return null;
+        }
+        fclose($fp);
+        return true;
+    }
+
+    public static function logErreur($msgError, $filePath)
+    {
+        self::writeFile($filePath, $msgError);
+    }
+
+    public static function toUtf8($text)
+    {
+        // echo "#".$text." ".mb_detect_encoding($text)."#";
+        if (self::isUTF8($text)) {
+            return $text;
+        }
+        return utf8_encode($text);
+    }
+
+    public static function isUTF8($str)
+    {
+        if ($str === mb_convert_encoding(mb_convert_encoding($str, "UTF-32", "UTF-8"), "UTF-8", "UTF-32")) {
+            return true;
+        }
+        return false;
+    }
+}
